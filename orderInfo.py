@@ -1,27 +1,37 @@
 import requests
 
-# Reemplaza estos valores con los reales
-ACCOUNT_NAME = "tottoco"
-ENVIRONMENT = "vtexcommercestable"
-APP_KEY = "vtexappkey-tottoco-ZLNQHD"
-APP_TOKEN = "XZDEBEPNQWJWSFNNMVMWYBKXSJLPAQHNNPSSKNSBWOAAGHBGBPDPODUVOGLRSANZPVJCMVCYDLZKBKRLIFOLMRZKUXDEBAIWBALKXYTGMEMCDKUEOAJNLCNXWYIPRYWD"
-ORDEN = "1523910520810-01"
+
 # Endpoint de órdenes
-url = f"https://{ACCOUNT_NAME}.{ENVIRONMENT}.com.br/api/oms/pvt/orders/"
+def get_transaction_ids(order_id):
+    # Reemplaza estos valores con los reales
+    ACCOUNT_NAME = "tottoco"
+    ENVIRONMENT = "vtexcommercestable"
+    APP_KEY = "vtexappkey-tottoco-ZLNQHD"
+    APP_TOKEN = "XZDEBEPNQWJWSFNNMVMWYBKXSJLPAQHNNPSSKNSBWOAAGHBGBPDPODUVOGLRSANZPVJCMVCYDLZKBKRLIFOLMRZKUXDEBAIWBALKXYTGMEMCDKUEOAJNLCNXWYIPRYWD"
 
-headers = {
-    "X-VTEX-API-AppKey": APP_KEY,
-    "X-VTEX-API-AppToken": APP_TOKEN,
-    "Content-Type": "application/json",
-    "Accept": "application/json"
-}
+    url = f"https://{ACCOUNT_NAME}.{ENVIRONMENT}.com.br/api/oms/pvt/orders/{order_id}"
 
-# Puedes añadir parámetros como ?f_creationDate=2024-01-01T00:00:00Z
-response = requests.get(url, headers=headers)
+    headers = {
+        "X-VTEX-API-AppKey": APP_KEY,
+        "X-VTEX-API-AppToken": APP_TOKEN,
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+    }
 
-if response.status_code == 200:
-    orders = response.json()
-    print("Órdenes encontradas:", orders)
-else:
-    print("Error al consultar la API:", response.status_code)
-    print(response.text)
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        print(f"❌ Error al consultar orden {order_id}: {response.status_code}")
+        return []
+
+    data = response.json()
+
+    transaction_ids = []
+
+    if "paymentData" in data and "transactions" in data["paymentData"]:
+        for tx in data["paymentData"]["transactions"]:
+            transaction_ids.append(tx.get("transactionId"))
+    else:
+        print(f"⚠️ Orden {order_id} no contiene 'paymentData.transactions'")
+
+    return transaction_ids
