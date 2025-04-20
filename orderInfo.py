@@ -1,19 +1,26 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+# Cargar variables desde el archivo .env
+load_dotenv(dotenv_path='constants.env')
+
+
+# Acceder a las variables
 
 
 # Endpoint de órdenes
 def get_transaction_ids(order_id):
-    # Reemplaza estos valores con los reales
-    ACCOUNT_NAME = "tottoco"
-    ENVIRONMENT = "vtexcommercestable"
-    APP_KEY = "vtexappkey-tottoco-ZLNQHD"
-    APP_TOKEN = "XZDEBEPNQWJWSFNNMVMWYBKXSJLPAQHNNPSSKNSBWOAAGHBGBPDPODUVOGLRSANZPVJCMVCYDLZKBKRLIFOLMRZKUXDEBAIWBALKXYTGMEMCDKUEOAJNLCNXWYIPRYWD"
-
-    url = f"https://{ACCOUNT_NAME}.{ENVIRONMENT}.com.br/api/oms/pvt/orders/{order_id}"
+    account_name = os.getenv("ACCOUNT_NAME")
+    environment = os.getenv("ENVIRONMENT")
+    app_key = os.getenv("APP_KEY")
+    app_token = os.getenv("APP_TOKEN")
+    print("accountname : " + account_name)
+    url = f"https://{account_name}.{environment}.com.br/api/oms/pvt/orders/{order_id}"
 
     headers = {
-        "X-VTEX-API-AppKey": APP_KEY,
-        "X-VTEX-API-AppToken": APP_TOKEN,
+        "X-VTEX-API-AppKey": app_key,
+        "X-VTEX-API-AppToken": app_token,
         "Content-Type": "application/json",
         "Accept": "application/json"
     }

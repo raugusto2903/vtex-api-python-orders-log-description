@@ -1,0 +1,17 @@
+# Entorno virtual
+venv/
+.env
+__pycache__/
+*.pyc
+
+# Archivos de configuración sensibles
+.env.*
+*.env
+
+# Archivos de usuario/IDE
+*.log
+*.swp
+.DS_Store
+.vscode/
+.idea/
+*.json
